@@ -3,13 +3,16 @@ import { useEffect, useState } from 'react'
 const SESSION_KEY = 'mbnc-intro-played'
 
 export default function SiteIntro() {
-  const [show, setShow] = useState(false)
+ const [show] = useState(() => {
+  if (typeof window === 'undefined') return false
+  return !sessionStorage.getItem(SESSION_KEY)
+})
 
-  useEffect(() => {
-    if (sessionStorage.getItem(SESSION_KEY)) return
+useEffect(() => {
+  if (show) {
     sessionStorage.setItem(SESSION_KEY, '1')
-    setShow(true)
-  }, [])
+  }
+}, [show])
 
   if (!show) return null
 

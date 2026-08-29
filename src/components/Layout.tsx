@@ -30,6 +30,13 @@ export default function Layout({ children }: LayoutProps) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Reset scroll position to the top whenever navigating to a new page
+  // (e.g. clicking a product), instead of keeping the previous page's
+  // scroll offset.
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
+
   return (
     <>
       <SiteIntro />
@@ -154,7 +161,7 @@ export default function Layout({ children }: LayoutProps) {
 
               {/* Social Links */}
               <div className="footer-col">
-                <h4>Connect</h4>
+                                <h4>Connect</h4>
 
                 <a
                   href={INSTAGRAM_LINK}
