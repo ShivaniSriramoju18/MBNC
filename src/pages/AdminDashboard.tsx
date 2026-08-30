@@ -29,11 +29,18 @@ export default function AdminDashboard() {
     loadProducts()
   }, [])
 
-  async function loadProducts() {
-    const snapshot = await getDocs(collection(db, 'products'))
-    const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Product))
-    setProducts(data)
-  }
+ async function loadProducts() {
+  const snapshot = await getDocs(collection(db, 'products'))
+  const data = snapshot.docs.map((d) => {
+    const raw = d.data()
+    return {
+      id: d.id,
+      ...raw,
+      formUrl: raw.orderFormUrl,
+    } as Product
+  })
+  setProducts(data)
+}
 
   function startEdit(product: Product) {
     setEditingId(product.id)
