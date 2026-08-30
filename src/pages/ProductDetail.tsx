@@ -1,14 +1,56 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
-import { products } from '../config/site'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../firebase'
+import type { Product } from '../types'
 import Feedback from '../components/Feedback'
 import Reveal from '../components/Reveal'
 import StickyOrderBar from '../components/StickyOrderBar'
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>()
-  const product = products.find((p) => p.id === id)
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
   const buyRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    async function fetchProduct() {
+      if (!id) return
+      try {
+        const snapshot = await getDoc(doc(db, 'products', id))
+        if (snapshot.exists()) {
+          const d = snapshot.data()
+          setProduct({
+            id: snapshot.id,
+            name: d.name,
+            subtitle: d.subtitle,
+            image: d.image,
+            category: d.category,
+            price: d.price,
+            description: d.description,
+            benefits: d.benefits,
+            dosage: d.dosage,
+            formUrl: d.orderFormUrl,
+          } as Product)
+        }
+      } catch (err) {
+        console.error('Failed to fetch product:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProduct()
+  }, [id])
+
+  if (loading) {
+    return (
+      <main>
+        <div className="container" style={{ padding: '80px 0' }}>
+          <p>Loading product…</p>
+        </div>
+      </main>
+    )
+  }
 
   if (!product) {
     return <Navigate to="/" replace />
