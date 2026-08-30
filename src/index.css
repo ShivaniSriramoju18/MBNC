@@ -1645,3 +1645,15 @@ nav.primary-nav a.active::after {
     animation: none;
   }
 }
+.offer-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #16a34a;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  z-index: 2;
+}

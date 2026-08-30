@@ -9,6 +9,7 @@ export interface Product {
   benefits: string[]
   dosage: string | null
   formUrl?: string
+  offer?: string
 }
 export interface TeamMember {
   name: string

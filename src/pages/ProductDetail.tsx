@@ -6,6 +6,7 @@ import type { Product } from '../types'
 import Feedback from '../components/Feedback'
 import Reveal from '../components/Reveal'
 import StickyOrderBar from '../components/StickyOrderBar'
+import { getDiscountedPrice } from '../utils/pricing'
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>()
@@ -27,6 +28,7 @@ export default function ProductDetail() {
             image: d.image,
             category: d.category,
             price: d.price,
+            offer: d.offer,
             description: d.description,
             benefits: d.benefits,
             dosage: d.dosage,
@@ -56,6 +58,8 @@ export default function ProductDetail() {
     return <Navigate to="/" replace />
   }
 
+  const discountedPrice = getDiscountedPrice(product.price, product.offer)
+
   return (
     <main>
       <StickyOrderBar product={product} anchorRef={buyRef} />
@@ -83,7 +87,16 @@ export default function ProductDetail() {
               {product.dosage && <div className="product-dosage">{product.dosage}</div>}
 
               <div className="product-detail-buy" ref={buyRef}>
-                <span className="price-tag-lg">₹{product.price}</span>
+                {discountedPrice ? (
+                  <span className="price-tag-lg">
+                    <span style={{ textDecoration: 'line-through', opacity: 0.6, fontSize: '0.7em', marginRight: 8 }}>
+                      ₹{product.price}
+                    </span>
+                    ₹{discountedPrice}
+                  </span>
+                ) : (
+                  <span className="price-tag-lg">₹{product.price}</span>
+                )}
                 <a href={product.formUrl} target="_blank" rel="noreferrer" className="btn btn-primary shine">
                   Order Now
                 </a>

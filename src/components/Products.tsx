@@ -22,6 +22,7 @@ export default function Products() {
             image: d.image,
             category: d.category,
             price: d.price,
+            offer: d.offer,
             description: d.description,
             benefits: d.benefits,
             dosage: d.dosage,
