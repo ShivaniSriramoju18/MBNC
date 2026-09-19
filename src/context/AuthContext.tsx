@@ -21,7 +21,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user)
+      // Visitors who post feedback get a silent anonymous identity (see services/reviews.ts).
+      // Only a real login (the admin) counts as "logged in" for the rest of the app.
+      setCurrentUser(user && !user.isAnonymous ? user : null)
       setLoading(false)
     })
     return unsubscribe

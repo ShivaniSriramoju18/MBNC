@@ -3,6 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import type { Product } from '../types'
+import { products as builtInProducts } from '../config/site'
 import Feedback from '../components/Feedback'
 import Reveal from '../components/Reveal'
 import StickyOrderBar from '../components/StickyOrderBar'
@@ -36,7 +37,10 @@ export default function ProductDetail() {
           } as Product)
         }
       } catch (err) {
-        console.error('Failed to fetch product:', err)
+        // Couldn't reach Firestore — fall back to the built-in copy instead of bouncing to the home page.
+        console.error('Failed to fetch product, using built-in copy instead:', err)
+        const builtIn = builtInProducts.find((p) => p.id === id)
+        if (builtIn) setProduct(builtIn)
       } finally {
         setLoading(false)
       }

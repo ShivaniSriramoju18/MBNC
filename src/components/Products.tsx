@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from '../firebase'
 import type { Product } from '../types'
+import { products as builtInProducts } from '../config/site'
 import ProductCard from './ProductCard'
 import Reveal from './Reveal'
 
@@ -31,7 +32,9 @@ export default function Products() {
         })
         setProducts(data)
       } catch (err) {
-        console.error('Failed to fetch products:', err)
+        // Couldn't reach Firestore — show the built-in product list instead of a blank page.
+        console.error('Failed to fetch products, showing built-in list instead:', err)
+        setProducts(builtInProducts)
       } finally {
         setLoading(false)
       }
@@ -55,6 +58,8 @@ export default function Products() {
         </Reveal>
         {loading ? (
           <p>Loading products…</p>
+        ) : products.length === 0 ? (
+          <p>No products are available right now. Please check back soon.</p>
         ) : (
           <div className="product-grid">
             {products.map((p, i) => (
